@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>{{ p.full_name }} - Resume</title>
+<style>
+  @page { size: A4; margin: 14mm; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 9.5pt; color: #000; line-height: 1.3; }
+  h1 { font-size: 18pt; margin: 0 0 2px; }
+  .contact { font-size: 9pt; color: #333; margin-bottom: 8px; }
+  h2 { font-size: 10pt; text-transform: uppercase; margin: 11px 0 4px; border-bottom: 0.5pt solid #888; }
+  .item { margin-bottom: 5px; page-break-inside: avoid; }
+  b { font-weight: bold; }
+  .dates { color: #444; }
+  ul { margin: 2px 0 0 15px; padding: 0; }
+</style></head>
+<body>
+  <h1>{{ p.full_name }}</h1>
+  <div class="contact">
+    {% if p.headline %}{{ p.headline }}<br>{% endif %}
+    {{ [p.email, p.phone, p.location, p.linkedin, p.github] | select | join(' | ') }}
+  </div>
+
+  {% if summary %}<h2>Summary</h2><div>{{ summary }}</div>{% endif %}
+
+  {% if experience %}<h2>Experience</h2>
+  {% for x in experience %}<div class="item">
+    <b>{{ x.role }}</b>{% if x.company %}, {{ x.company }}{% endif %}
+    <span class="dates">({{ x.start }}{% if x.start and x.end %} - {% endif %}{{ x.end }})</span>
+    <ul>{% for l in lines(x.details) %}<li>{{ l }}</li>{% endfor %}</ul>
+  </div>{% endfor %}{% endif %}
+
+  {% if projects %}<h2>Projects</h2>
+  {% for pr in projects %}<div class="item">
+    <b>{{ pr.name }}</b>{% if pr.tech %} - {{ pr.tech }}{% endif %}{% if pr.link %} ({{ pr.link }}){% endif %}
+    <ul>{% for l in lines(pr.details) %}<li>{{ l }}</li>{% endfor %}</ul>
+  </div>{% endfor %}{% endif %}
+
+  {% if education %}<h2>Education</h2>
+  {% for e in education %}<div class="item">
+    <b>{{ e.institution }}</b> - {{ e.degree }}{% if e.grade %}, {{ e.grade }}{% endif %}
+    <span class="dates">({{ e.start }}{% if e.start and e.end %} - {% endif %}{{ e.end }})</span>
+  </div>{% endfor %}{% endif %}
+
+  {% if skills %}<h2>Skills</h2><div>{{ skills | join(', ') }}</div>{% endif %}
+</body></html>

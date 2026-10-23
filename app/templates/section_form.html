@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ spec.title }}{% endblock %}
+
+{% macro field(f, value) %}
+  <div class="mb-3">
+    <label class="form-label">{{ f.label }}</label>
+    {% if f.type == 'textarea' %}
+      <textarea class="form-control" name="{{ f.name }}" rows="4">{{ value }}</textarea>
+    {% else %}
+      <input class="form-control" type="{{ f.type }}" name="{{ f.name }}" value="{{ value }}" {% if f.required %}required{% endif %}>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+{% block content %}
+<ul class="nav nav-pills mb-4">
+  {% for k in order %}
+  <li class="nav-item">
+    <a class="nav-link {% if k == key %}active{% endif %}" href="{{ url_for('profile.edit_section', section=k) }}">{{ sections[k].title }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+<div class="card shadow-sm"><div class="card-body">
+  <h4 class="mb-3">{{ spec.title }}</h4>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    {% if spec.kind == 'list' %}
+      <div id="entries">
+        {% for entry in data.entries %}
+        <div class="entry border rounded p-3 mb-3 bg-white">
+          {% for f in spec.fields %}{{ field(f, entry.get(f.name, '')) }}{% endfor %}
+          <button type="button" class="btn btn-sm btn-outline-danger remove-entry">Remove entry</button>
+        </div>
+        {% endfor %}
+      </div>
+      <button type="button" id="add-entry" class="btn btn-outline-secondary mb-3">+ Add another</button>
+    {% else %}
+      {% for f in spec.fields %}{{ field(f, data.get(f.name, '')) }}{% endfor %}
+    {% endif %}
+
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary">Save</button>
+      <button class="btn btn-outline-primary" name="next" value="1">Save &amp; next</button>
+    </div>
+  </form>
+</div></div>
+
+{% if spec.kind == 'list' %}
+<script>
+  const box = document.getElementById('entries');
+  const blank = box.firstElementChild.cloneNode(true);
+  blank.querySelectorAll('input, textarea').forEach(el => el.value = '');
+  document.getElementById('add-entry').addEventListener('click', () => box.appendChild(blank.cloneNode(true)));
+  box.addEventListener('click', e => {
+    if (e.target.classList.contains('remove-entry')) {
+      if (box.children.length > 1) e.target.closest('.entry').remove();
+      else e.target.closest('.entry').querySelectorAll('input, textarea').forEach(el => el.value = '');
+    }
+  });
+</script>
+{% endif %}
+{% endblock %}

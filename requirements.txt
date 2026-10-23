@@ -1,0 +1,10 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-WTF==1.2.1
+boto3==1.35.36
+gunicorn==23.0.0
+psycopg2-binary==2.9.9
+PyMySQL==1.1.1
+python-dotenv==1.0.1
+playwright==1.64.1

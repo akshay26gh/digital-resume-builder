@@ -1,0 +1,52 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>{{ p.full_name }} - Resume</title>
+<style>
+  @page { size: A4; margin: 16mm 16mm; }
+  body { font-family: "Times New Roman", Georgia, serif; font-size: 11pt; color: #111; line-height: 1.35; }
+  h1 { font-size: 22pt; margin: 0; text-align: center; letter-spacing: 1px; }
+  .headline { text-align: center; font-style: italic; margin: 2px 0 4px; }
+  .contact { text-align: center; font-size: 10pt; margin-bottom: 10px; }
+  h2 { font-size: 12pt; text-transform: uppercase; border-bottom: 1px solid #111; margin: 14px 0 6px; padding-bottom: 2px; letter-spacing: 1px; }
+  .item { margin-bottom: 7px; page-break-inside: avoid; }
+  .row { width: 100%; overflow: hidden; }
+  .left { float: left; font-weight: bold; }
+  .right { float: right; font-size: 10pt; }
+  .sub { font-style: italic; clear: both; }
+  ul { margin: 3px 0 0 18px; padding: 0; }
+  li { margin-bottom: 1px; }
+</style></head>
+<body>
+  <h1>{{ p.full_name }}</h1>
+  {% if p.headline %}<div class="headline">{{ p.headline }}</div>{% endif %}
+  <div class="contact">
+    {{ [p.email, p.phone, p.location, p.linkedin, p.github] | select | join('  |  ') }}
+  </div>
+
+  {% if summary %}<h2>Summary</h2><p>{{ summary }}</p>{% endif %}
+
+  {% if education %}<h2>Education</h2>
+  {% for e in education %}
+  <div class="item">
+    <div class="row"><span class="left">{{ e.institution }}</span>
+      <span class="right">{{ e.start }}{% if e.start and e.end %} - {% endif %}{{ e.end }}</span></div>
+    <div class="sub">{{ e.degree }}{% if e.grade %} &middot; {{ e.grade }}{% endif %}</div>
+  </div>{% endfor %}{% endif %}
+
+  {% if experience %}<h2>Experience</h2>
+  {% for x in experience %}
+  <div class="item">
+    <div class="row"><span class="left">{{ x.role }}{% if x.company %}, {{ x.company }}{% endif %}</span>
+      <span class="right">{{ x.start }}{% if x.start and x.end %} - {% endif %}{{ x.end }}</span></div>
+    <ul>{% for l in lines(x.details) %}<li>{{ l }}</li>{% endfor %}</ul>
+  </div>{% endfor %}{% endif %}
+
+  {% if projects %}<h2>Projects</h2>
+  {% for pr in projects %}
+  <div class="item">
+    <div class="row"><span class="left">{{ pr.name }}</span><span class="right">{{ pr.link }}</span></div>
+    {% if pr.tech %}<div class="sub">{{ pr.tech }}</div>{% endif %}
+    <ul>{% for l in lines(pr.details) %}<li>{{ l }}</li>{% endfor %}</ul>
+  </div>{% endfor %}{% endif %}
+
+  {% if skills %}<h2>Skills</h2><p>{{ skills | join(', ') }}</p>{% endif %}
+</body></html>

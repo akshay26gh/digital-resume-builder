@@ -1,0 +1,15 @@
+[Unit]
+Description=Digital Resume Builder (gunicorn)
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/resume_builder
+EnvironmentFile=/home/ubuntu/resume_builder/.env
+ExecStart=/home/ubuntu/resume_builder/venv/bin/gunicorn --workers 3 --bind unix:/run/resume_builder.sock wsgi:app
+RuntimeDirectory=resume_builder
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

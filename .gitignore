@@ -1,0 +1,29 @@
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+venv/
+venv312/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local databases and generated files
+*.db
+*.sqlite
+*.sqlite3
+local_storage/
+instance/
+*.pdf
+
+# IDE files
+.vscode/
+.idea/
+
+# Old WeasyPrint backup
+app/pdf - Copy.py

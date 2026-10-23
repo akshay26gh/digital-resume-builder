@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Generate resume{% endblock %}
+{% block content %}
+<h4 class="mb-3">Generate a resume</h4>
+{% if not has_profile %}
+<div class="alert alert-warning">Add your <a href="{{ url_for('profile.edit_section', section='personal') }}">personal details</a> first.</div>
+{% endif %}
+<form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="row g-3 mb-4">
+    {% for key, label in templates.items() %}
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm"><div class="card-body">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="template" id="t-{{ key }}" value="{{ key }}" {% if loop.first %}checked{% endif %}>
+          <label class="form-check-label fw-bold" for="t-{{ key }}">{{ key|capitalize }}</label>
+        </div>
+        <p class="text-muted small mt-2">{{ label }}</p>
+        <a class="btn btn-sm btn-outline-secondary" target="_blank" href="{{ url_for('resumes.preview', template=key) }}">Preview</a>
+      </div></div>
+    </div>
+    {% endfor %}
+  </div>
+  <button class="btn btn-primary" {% if not has_profile %}disabled{% endif %}>Generate PDF</button>
+</form>
+{% endblock %}
